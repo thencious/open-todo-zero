@@ -1,0 +1,13 @@
+{
+  "name": "open-todo-zero",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A minimal dark task list with editable Markdown notes and optional free-model deadline detection.",
+  "license": "MIT",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "build": "node scripts/build-worker.mjs",
+    "screenshots": "node scripts/render-screenshots.mjs"
+  },
+  "engines": { "node": ">=20" }
+}

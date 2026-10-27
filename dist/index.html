@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171717">
+  <meta name="description" content="Simple notes and tasks. Write directly in formatted notes, or switch to raw Markdown.">
+  <title>Open Todo Zero</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%23dddddd'/%3E%3Cpath d='m11 20 6 6 12-13' fill='none' stroke='%23222222' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="vendor/toastui-editor.css"><link rel="stylesheet" href="vendor/toastui-editor-dark.css"><link rel="stylesheet" href="styles.css">
+  <script defer src="vendor/purify.js"></script><script defer src="vendor/toastui-editor.js"></script><script defer src="deadlines.js"></script><script defer src="openrouter.js"></script><script defer src="notifications.js"></script><script defer src="cloud.js"></script><script defer src="app.js"></script>
+</head>
+<body>
+ <main>
+  <div class="workspace" id="workspace">
+   <section class="task-pane" aria-label="Task list">
+    <div class="list-tools"><div class="filters" aria-label="Filter tasks"><button class="filter active" data-filter="all" aria-pressed="true">All</button><button class="filter" data-filter="active" aria-pressed="false">Active</button><button class="filter" data-filter="completed" aria-pressed="false">Completed</button></div><div class="search-wrap" id="search-wrap" hidden><input id="search" type="search" placeholder="Search…" aria-label="Search tasks and notes"></div><div class="toolbar-actions"><button class="icon-button" id="search-toggle" aria-label="Search tasks" aria-expanded="false" title="Search tasks"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg></button><button id="settings-open" class="icon-button" aria-label="Deadline and notification settings" title="Deadline and notification settings"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="10" cy="18" r="2"/></svg></button></div></div>
+    <div id="task-list" tabindex="-1"></div>
+   </section>
+   <aside class="detail-pane" id="detail-pane" aria-label="Task notes">
+    <div id="detail-empty" class="detail-empty" hidden>Select a task to edit notes.</div>
+    <div id="detail-content">
+     <div class="detail-topline"><input class="detail-title" id="detail-title" aria-label="Task title" maxlength="250" enterkeyhint="done"><button class="icon-button" id="delete-task" aria-label="Delete task" title="Delete task"><svg viewBox="0 0 24 24"><path d="M4 6h16M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7m4-7v7"/></svg></button><button class="icon-button" id="close-detail" aria-label="Close task details" title="Close details"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></svg></button></div>
+     <div class="notes-header"><div class="note-meta"><button class="status-button" id="detail-status"></button><select id="priority" aria-label="Task priority"><option value="urgent">Urgent</option><option value="important">Important</option><option value="unimportant">Unimportant</option></select><span id="estimate-label"></span></div><div class="notes-actions"><button id="update-ai" class="source-toggle" title="Update the deadline and work estimate from this task and its notes">Update AI</button><button id="source-toggle" class="source-toggle" aria-pressed="false" title="Show raw Markdown">&lt;/&gt; Markdown</button></div></div>
+     <div class="deadline-fields"><label for="due-date">Due <input id="due-date" type="date" aria-label="Deadline date"></label><label for="due-time">Time <input id="due-time" type="time" step="1" aria-label="Deadline time"></label><button id="deadline-clear" class="icon-button" aria-label="Clear deadline" title="Clear deadline">×</button><span id="deadline-feedback" role="status"></span></div>
+     <div class="editor-box"><div id="editor-mount" aria-label="Notes editor"></div></div>
+     <div class="notes-footer"><span id="storage-status" role="status">Saved on this device</span><span id="word-count"></span></div>
+    </div>
+   </aside>
+  </div>
+ </main>
+ <div id="toast" class="toast" role="status" hidden><span id="toast-message"></span><button id="undo">Undo</button><button id="dismiss-toast" aria-label="Dismiss notification">×</button></div>
+ <dialog id="settings-dialog"><div class="settings-heading"><h2>Deadlines & alerts</h2><button id="settings-close" class="icon-button" aria-label="Close settings">×</button></div><p class="local-clock" id="local-clock"></p><p>OpenRouter calculates deadlines and work estimates. From midnight through 04:59, tomorrow/tmr/tmrw means today; from 05:00 it means the next day. Deadlines use your system’s local time. Dates without a time end at 23:59:59; Bare event mentions of tomorrow assume noon; by tomorrow means 23:59:59. “by next week” means Monday at 00:00.</p><h3>OpenRouter</h3><p>Free models only, with a $0 price ceiling. Requests use your OpenRouter free-model quota. If the quota is exhausted, analysis stops.</p><p>AI runs only when a new task is confirmed, an edited task title is confirmed, or Update AI is clicked in the notes editor. Confirm new tasks and title edits with Enter. Switching windows or leaving an input keeps the draft and never calls AI. Editing notes or connecting OpenRouter never calls AI automatically. Task text is sent to OpenRouter when connected. The connection stays on this device until disconnected. It is saved in this browser.</p><p id="openrouter-status" role="status"></p><div class="settings-actions"><button id="openrouter-connect">Connect OpenRouter</button><button id="openrouter-disconnect">Disconnect</button></div><p>Tasks become urgent when time left ≤ 12 hours + estimated work time. Alerts fire when time left ≤ the estimate.</p><h3>Notifications</h3><button id="enable-notifications">Enable browser notifications</button><p id="notification-status" role="status"></p><label for="ntfy-topic">ntfy topic URL</label><input id="ntfy-topic" type="url" placeholder="https://ntfy.sh/your-private-topic"><label for="ntfy-token">ntfy access token (optional; this tab only)</label><input id="ntfy-token" type="password" autocomplete="off"><div class="settings-actions"><button id="ntfy-save">Save ntfy settings</button></div><p id="ntfy-status" role="status"></p><p>Subscribe to the same topic in ntfy. Server reminders continue while the app and your devices are off. Farther deadlines are queued by the server as they approach. Browser notifications need the app open.</p></dialog>
+</body></html>
