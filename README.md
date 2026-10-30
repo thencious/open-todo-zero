@@ -30,7 +30,7 @@ Open **http://127.0.0.1:5173**. Tasks and notes are saved in that browser. To ch
 
 ## Optional AI
 
-Connect your own OpenRouter account in settings. Requests use **`openrouter/free` with a $0 input/output price ceiling**, required function calling, and no paid fallback. Your account's free-model quota applies.
+Connect your own OpenRouter account in settings. Requests use **Nemotron 3.5 Super VL (free), followed by Nemotron 3 Ultra (free) on failure, with a $0 input/output price ceiling**, required function calling, and no paid fallback. Your account's free-model quota applies.
 
 One request extracts a deadline and estimates work time. It runs only when you confirm a new task, confirm a changed title, or click **Update AI**. There is no local deadline detector. Failed calls show an error and retain response details for diagnosis.
 
@@ -54,3 +54,5 @@ Notes stay in browser storage unless the optional backend is enabled. Connecting
 - Build the optional Worker: `npm run build`
 
 [MIT license](LICENSE). Bundled editor and sanitizer licenses are listed in [third-party notices](THIRD_PARTY_NOTICES.md).
+
+Model selection is a curated priority order, not the random free router. Both listed endpoints advertise tools and tool_choice. The order uses general reasoning evidence and mandatory tool compatibility; it is not a task-specific accuracy ranking. No smaller/random model is silently substituted. The model actually used is recorded with each response.
